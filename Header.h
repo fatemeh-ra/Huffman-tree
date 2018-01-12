@@ -7,7 +7,6 @@ using namespace std;
 class BaseNode
 {
 public:
-    virtual bool isLeaf(){;}
     virtual int getValue(){;}
 };
 
@@ -23,7 +22,6 @@ public:
     }
     char getElement(){return element;}
     int getValue(){return value;}
-    bool isLeaf(){return true;}
 };
 
 class InternalNode : public BaseNode
@@ -41,14 +39,13 @@ public:
     BaseNode* getLeft(){return left;}
     BaseNode* getRight() {return right;}
     int getValue(){return value;}
-    bool isLeaf(){return false;}
 };
 
 class Heap
 {
     BaseNode ** array;
     int size;
-    bool update(int root, int child);
+    void update(int root, int child);
 public:
     Heap()
     {
@@ -61,7 +58,7 @@ public:
     BaseNode* FindMin();
 };
 
-void makeTree(Heap h, string in);
+void makeTree(Heap *h, string in);
 string input();
 void output(BaseNode * node, string out);
 

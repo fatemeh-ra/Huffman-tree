@@ -7,12 +7,12 @@ using namespace std;
 
 int main()
 {
-    Heap h;
+    Heap *h;
+    h = new Heap;
     string in;
     in = input();
     makeTree(h, in);
-    InternalNode* x = (InternalNode*)h.FindMin();
-    output(h.FindMin(), "");
+    output(h->FindMin(), "");
 }
 
 string input()
@@ -37,7 +37,7 @@ int countChar(string in, char target)
     return result;
 }
 
-void makeTree(Heap h, string in)
+void makeTree(Heap *h, string in)
 {
     for(int i = 'A'; i <= 'Z'; i++)
     {
@@ -45,28 +45,29 @@ void makeTree(Heap h, string in)
         if(x != 0)
         {
             LeafNode *l = new LeafNode(i, x);
-            h.insert((BaseNode*)l);
+            h->insert((BaseNode*)l);
         }
     }
-    while(h.getSize() > 1)
+    while(h->getSize() > 1)
     {
-        auto a = h.ExtractMin();
-        auto b = h.ExtractMin();
+        auto a = h->ExtractMin();
+        auto b = h->ExtractMin();
         InternalNode *n = new InternalNode(a->getValue()+b->getValue(),a,b);
-        h.insert((BaseNode*)n);
+        h->insert((BaseNode*)n);
     }
 }
 
 void output(BaseNode * node, string out)
 {
-    if(node->isLeaf())
+    LeafNode * x = dynamic_cast<LeafNode*>(node);
+    if(x)
     {
-        LeafNode * x = (LeafNode*)node;
         cout << x->getElement() << " = " << out << endl;
         return;
     }
-    InternalNode *x = (InternalNode*)node;
-    output(x->getLeft(), out + "0");
-    output(x->getRight(), out+ "1");
+    InternalNode *y = dynamic_cast<InternalNode*> (node);
+    output(y->getLeft(), out + "0");
+    output(y->getRight(), out+ "1");
     return;
 }
+// http://huffman.ooz.ie/?text=CARSALESDROPPEDAROUNDLASTYEARWITHDRIVERSCONTINUINGTOSHUNDIESELPOWEREDENGINES

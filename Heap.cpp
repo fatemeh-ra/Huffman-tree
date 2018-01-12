@@ -5,14 +5,14 @@ using namespace std;
 
 BaseNode* Heap::FindMin()
 {
-    return array[0];
+    return array[1];
 }
 
 void Heap::insert(BaseNode *x)
 {
-    array[size] = x;
+    array[++size] = x;
     int s = size;
-    for (int i = size/2; i >= 0; i /= 2)
+    for (int i = size/2; i > 0; i /= 2)
     {
         if (array[i]->getValue() > array[s]->getValue())
         {
@@ -23,20 +23,19 @@ void Heap::insert(BaseNode *x)
         }
         else break;
     }
-    size++;
 }
 
 BaseNode* Heap::ExtractMin()
 {
-    auto m = array[0];
-    array[0] = array[--size];
-    bool result;
-    if(size > 1) result = update(0, 1);
-    if(size > 2 && !result) update(0, 2);
+    auto m = array[1];
+    array[1] = array[size--];
+    if(size == 2) update(1, 2);
+    else if(size > 2 && array[2]->getValue() <= array[3]->getValue()) update(1, 2);
+    else if(size > 2 && array[3]->getValue() < array[2]->getValue()) update(1, 3);
     return m;
 }
 
-bool Heap::update(int root, int child)
+void Heap::update(int root, int child)
 {
     if (array[root]->getValue() > array[child]->getValue())
     {
@@ -44,15 +43,10 @@ bool Heap::update(int root, int child)
         array[root] = array[child];
         array[child] = tmp;
         bool result;
-        if(size > child*2)
-        {
-            result = update(child, child*2);
-        }
-        if(size >= child*2 && !result)
-        {
-            update(child, child*2 -1);
-        }
-        return true;
+        if (size == child*2) update(child, child*2);
+        else if (size > child*2 && array[child*2]->getValue() <= array[child*2 + 1]->getValue()) 
+            update(child, child*2);
+        else if (size > child*2 && array[child*2 + 1]->getValue() < array[child*2]->getValue()) 
+            update(child, child*2 + 1);
     }
-    return false;
 }
